@@ -1,8 +1,7 @@
 package com.gauravlad.gridweaver_backend.enums;
-public enum GridStatus {
 
+public enum GridStatus {
     ONLINE,
     OFFLINE,
     MAINTENANCE
-
 }
