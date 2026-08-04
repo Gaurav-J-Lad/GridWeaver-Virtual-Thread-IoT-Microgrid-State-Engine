@@ -1,10 +1,23 @@
 package com.gauravlad.gridweaver_backend.controller;
 
+import com.gauravlad.gridweaver_backend.dto.response.DashboardResponse;
+import com.gauravlad.gridweaver_backend.service.DashboardService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/dashboard")
+@RequiredArgsConstructor
 public class DashboardController {
+
+    private final DashboardService dashboardService;
+
+    @GetMapping
+    public DashboardResponse getDashboardSummary() {
+
+        return dashboardService.getDashboard();
+    }
 
 }
