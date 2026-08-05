@@ -24,28 +24,38 @@ public class IoTDeviceSimulator {
 
         List<GridNode> nodes = gridNodeRepository.findAll();
 
-        for (GridNode node : nodes) {
+        try (var executor = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) {
 
-            Telemetry telemetry = new Telemetry();
+            for (GridNode node : nodes) {
 
-            telemetry.setGridNode(node);
+                executor.submit(() -> {
 
-            telemetry.setPowerOutput(generator.generatePowerOutput());
+                    Telemetry telemetry = new Telemetry();
 
-            telemetry.setVoltage(generator.generateVoltage());
+                    telemetry.setGridNode(node);
 
-            telemetry.setCurrent(generator.generateCurrent());
+                    telemetry.setPowerOutput(generator.generatePowerOutput());
 
-            telemetry.setTemperature(generator.generateTemperature());
+                    telemetry.setVoltage(generator.generateVoltage());
 
-            telemetry.setTimestamp(LocalDateTime.now());
+                    telemetry.setCurrent(generator.generateCurrent());
 
-            telemetryRepository.save(telemetry);
+                    telemetry.setTemperature(generator.generateTemperature());
+
+                    telemetry.setTimestamp(LocalDateTime.now());
+
+                    telemetryRepository.save(telemetry);
+
+                    System.out.println(
+                            "Telemetry generated for "
+                                    + node.getNodeId()
+                                    + " by "
+                                    + Thread.currentThread());
+                });
+
+            }
+
         }
 
-        System.out.println(
-                "Generated telemetry for "
-                        + nodes.size()
-                        + " nodes.");
     }
 }
