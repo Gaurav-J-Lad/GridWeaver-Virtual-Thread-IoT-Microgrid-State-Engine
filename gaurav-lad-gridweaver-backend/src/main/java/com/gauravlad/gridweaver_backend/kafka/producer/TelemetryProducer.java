@@ -1,6 +1,7 @@
 package com.gauravlad.gridweaver_backend.kafka.producer;
 
 import com.gauravlad.gridweaver_backend.entity.Telemetry;
+import com.gauravlad.gridweaver_backend.kafka.event.TelemetryEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -9,13 +10,16 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TelemetryProducer {
 
-    private final KafkaTemplate<String, Telemetry> kafkaTemplate;
+    private static final String TOPIC = "telemetry-topic";
 
-    public void sendTelemetry(Telemetry telemetry){
+    private final KafkaTemplate<String, TelemetryEvent> kafkaTemplate;
+
+    public void sendTelemetry(TelemetryEvent event) {
 
         kafkaTemplate.send(
-                "telemetry-topic",
-                telemetry
+                TOPIC,
+                event.nodeId(),
+                event
         );
     }
 }
